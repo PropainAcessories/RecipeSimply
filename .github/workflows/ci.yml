@@ -19,7 +19,7 @@ jobs:
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
+          MYSQL_PORT: ${{ secrets.PORT }}
         ports:
           - 3306:3306
         options: >-
