@@ -75,9 +75,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.mysql",
         "OPTIONS": {"charset": "utf8mb4"},
         "NAME": "recipesimply",
-        "USER": "root",           
+        "USER": env("MYSQL_USER"),           
         "PASSWORD": env("DB_PASSWORD"),
-        "HOST": "localhost",
+        "HOST": env("MYSQL_HOST"),
         "PORT": env("PORT"),
     }
 }
