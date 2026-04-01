@@ -1,0 +1,59 @@
+itignore
+# -------------------------
+# Python / Django
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.log
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Django stuff
+db.sqlite3
+media/
+staticfiles/
+static/
+
+# Environment variables
+.env
+*.env
+
+# Migrations (optional — keep if you want history)
+# **Recommended:** DO NOT ignore migrations in real projects
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# -------------------------
+# Node / Vite / React
+# -------------------------
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# Vite cache
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -------------------------
+# OS / Editor junk
+# -------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
