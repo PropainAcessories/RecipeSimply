@@ -15,7 +15,7 @@ __pycache__/
 venv/
 env/
 ENV/
-
+.env
 # Django stuff
 db.sqlite3
 media/
@@ -43,6 +43,7 @@ node_modules/
 dist/
 build/
 *.tsbuildinfo
+package-lock.json
 
 # Vite cache
 .vite/
