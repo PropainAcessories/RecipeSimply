@@ -2,17 +2,20 @@ name: CD
 
 on:
   push:
-    branches: [ "*" ]
+    branches:
+      - main
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Build frontend
+      # 2. Build frontend
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -21,11 +24,52 @@ jobs:
       - name: Build frontend
         run: |
           cd frontend
-          npm install
+          npm ci
           npm run build
 
-      # Deploy backend + frontend
-      # (This depends on your hosting provider)
-      - name: Deploy
+      # 3. Build backend
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install backend dependencies
         run: |
-          echo "Deploy step goes here"
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          python manage.py test
+
+      # 4. Log in to GitHub Container Registry
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 5. Build and push Docker images
+      - name: Build and push backend image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/backend:latest -f backend/Dockerfile.prod .
+          docker push ghcr.io/${{ github.repository }}/backend:latest
+
+      - name: Build and push frontend image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/frontend:latest -f frontend/Dockerfile.prod .
+          docker push ghcr.io/${{ github.repository }}/frontend:latest
+
+      # 6. Deploy to server via SSH
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.MYSQL_HOST }}
+          username: ${{ secrets.MYSQL_USER }}
+          script: |
+            cd /var/www/recipesimply
+            docker compose pull
+            docker compose down
+            docker compose up -d --build
