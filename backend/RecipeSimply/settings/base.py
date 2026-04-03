@@ -7,8 +7,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
+SECRET_KEY = env("SECRET_KEY", default="dev-secret")
+NAME = env("MYSQL_DB", default="dummy")
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
 
 DEBUG = False
 
@@ -74,11 +75,11 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "OPTIONS": {"charset": "utf8mb4"},
-        "NAME": "recipesimply",
-        "USER": env("MYSQL_USER"),           
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("MYSQL_HOST"),
-        "PORT": env("PORT"),
+        "NAME": env("MYSQL_DB", default="dummy"),
+        "USER": env("MYSQL_USER", default="dummy"),
+        "PASSWORD": env("MYSQL_PASSWORD", default="dummy"),
+        "HOST": env("MYSQL_HOST", default="localhost"),
+        "PORT": env("MYSQL_PORT", default="3306"),
     }
 }
 

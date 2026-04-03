@@ -25,6 +25,10 @@ static/
 # Environment variables
 .env
 *.env
+backend/.env
+frontend/.env
+
+
 
 # Migrations (optional — keep if you want history)
 # **Recommended:** DO NOT ignore migrations in real projects
@@ -57,3 +61,14 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+# -------------------------
+# Build artifacts
+# -------------------------
+staticfiles/
+node_modules/
+__pycache__/
+# -------------------------
+# Docker Volumes
+# -------------------------
+mysql_data/
+static_volume/
