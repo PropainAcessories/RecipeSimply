@@ -14,12 +14,10 @@ jobs:
       mysql:
         image: mysql:8
         env:
-          MYSQL_DB: ${{ secrets.MYSQL_DB }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-          MYSQL_PORT: ${{ secrets.PORT }}
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
         ports:
           - 3306:3306
         options: >-
@@ -46,14 +44,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Django migrations (dry run)
+      - name: Run Django migrations
+        working-directory: backend
+        env:
+          MYSQL_DB: testdb
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+          SECRET_KEY: test
         run: |
-          cd backend
           python manage.py migrate --noinput
 
       - name: Run Django tests
+        working-directory: backend
+        env:
+          MYSQL_DB: testdb
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+          SECRET_KEY: test
         run: |
-          cd backend
           python manage.py test
 
       # -------------------------
