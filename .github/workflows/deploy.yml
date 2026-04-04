@@ -62,8 +62,11 @@ jobs:
 
       - name: Build and push frontend image
         run: |
-          docker build -t ghcr.io/propainacessories/recipesimply/frontend:latest -f frontend/Dockerfile.prod .
-          docker push ghcr.io/propainacessories/recipesimply/frontend:latest
+          docker build \
+            -t ghcr.io/propainacessories/recipesimply/frontend:latest \
+            -f frontend/Dockerfile.prod \
+            frontend
+
 
       # 6. Deploy to server via SSH
       - name: Deploy to server
