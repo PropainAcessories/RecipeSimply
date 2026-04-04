@@ -1,0 +1,15 @@
+app = 'recipesimply-frontend'
+primary_region = 'ord'
+console_command = '/code/manage.py shell'
+
+app = "recipesimply-frontend"
+
+[build]
+  dockerfile = "Dockerfile.prod"
+
+[[services]]
+  internal_port = 80
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 80
