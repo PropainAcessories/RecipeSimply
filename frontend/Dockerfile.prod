@@ -1,24 +1,24 @@
-###############################
-# 1. Build Stage (Node)
-###############################
-FROM node:20 AS builder
+# -----------------------------
+# 1. Build the Vite frontend
+# -----------------------------
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies using cached layers
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
 
-# Copy the rest of the source code
+# Copy source code
 COPY . .
 
-# Build the Vite production bundle
+# Build the production bundle
 RUN npm run build
 
 
-###############################
-# 2. Production Stage (Nginx)
-###############################
+# -----------------------------
+# 2. Serve with Nginx
+# -----------------------------
 FROM nginx:stable-alpine
 
 # Remove default nginx website
@@ -27,7 +27,7 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy built frontend from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Optional: custom nginx config for SPA routing
+# Copy your custom nginx config (optional but recommended)
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
