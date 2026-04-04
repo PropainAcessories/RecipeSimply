@@ -74,6 +74,8 @@ jobs:
         with:
           host: ${{ secrets.MYSQL_HOST }}
           username: ${{ secrets.MYSQL_USER }}
+          password: ${{ secrets.MYSQL_PASSWORD }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /var/www/recipesimply
             docker compose pull
