@@ -2,30 +2,41 @@ name: CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - master
+      - database
 
 jobs:
-  deploy:
+  deploy-backend:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Build frontend
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
+      - name: Deploy Backend
+        run: flyctl deploy --remote-only
+        working-directory: backend
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      # Deploy backend + frontend
-      # (This depends on your hosting provider)
-      - name: Deploy
-        run: |
-          echo "Deploy step goes here"
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: deploy-backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy Frontend
+        run: flyctl deploy --remote-only
+        working-directory: frontend
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

@@ -1,0 +1,22 @@
+app = "recipesimply-frontend"
+primary_region = "ord"
+
+[build]
+  dockerfile = "Dockerfile.prod"
+
+[[services]]
+  internal_port = 80
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+[http_service]
+  internal_port = 80
+  force_https = true

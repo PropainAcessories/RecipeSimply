@@ -27,7 +27,8 @@ static/
 *.env
 backend/.env
 frontend/.env
-
+id_ed69420_GithubActions
+id_ed69420_GithubActions.pub
 
 
 # Migrations (optional — keep if you want history)
