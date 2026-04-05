@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y \
     build-essential \
     pkg-config \
-    libmariadb-dev \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -22,17 +22,13 @@ RUN pip install --upgrade pip && pip wheel --no-cache-dir --wheel-dir /wheels -r
 # -----------------------------
 FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y default-mysql-server
-
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    pkg-config \
-    libmariadb-dev \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /wheels /wheels
@@ -41,7 +37,6 @@ RUN pip install --no-cache /wheels/*
 COPY . .
 RUN chmod +x /app/entrypoint.sh
 
-# Collect static files
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000

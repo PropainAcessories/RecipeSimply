@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+import dj_database_url
 import environ
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -71,17 +71,12 @@ ASGI_APPLICATION = "RecipeSimply.asgi.application"
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "OPTIONS": {"charset": "utf8mb4"},
-        "NAME": env("MYSQL_DB", default="dummy"),
-        "USER": env("MYSQL_USER", default="dummy"),
-        "PASSWORD": env("MYSQL_PASSWORD", default="dummy"),
-        "HOST": env("MYSQL_HOST", default="localhost"),
-        "PORT": env("MYSQL_PORT", default="3306"),
-    }
+    "default": dj_database_url.config(
+        default="sqlite:///" + str(BASE_DIR / "db.sqlite3"),
+        conn_max_age=0,
+        ssl_require=False,
+    )
 }
-
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 
