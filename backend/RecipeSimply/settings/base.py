@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     # Local apps
     "apps.api",
     "apps.users",
-    "core",
     "corsheaders",
 ]
 

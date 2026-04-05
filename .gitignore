@@ -16,6 +16,8 @@ venv/
 env/
 ENV/
 .env
+.env.prod
+.env.dev
 # Django stuff
 db.sqlite3
 media/
