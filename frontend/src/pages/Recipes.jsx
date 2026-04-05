@@ -6,9 +6,9 @@ function Recipes() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const api = import.meta.env.VITE_API_URL;
+    console.log("Recipes component mounted");
 
-    fetch(`${api}/recipes/`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/recipes/`)
       .then((res) => res.json())
       .then((data) => {
         setRecipes(data);
@@ -16,6 +16,7 @@ function Recipes() {
       })
       .catch(() => setLoading(false));
   }, []);
+
 
   if (loading) {
     return <p style={{ padding: "1rem" }}>Loading recipes...</p>;
