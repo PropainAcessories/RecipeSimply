@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import.meta.env.VITE_API_URL
 
 function Recipes() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/recipes/`)
+    const api = import.meta.env.VITE_API_URL;
+
+    fetch(`${api}/recipes/`)
       .then((res) => res.json())
       .then((data) => {
         setRecipes(data);
