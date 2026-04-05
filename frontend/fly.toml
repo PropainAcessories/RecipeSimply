@@ -17,6 +17,9 @@ primary_region = "ord"
     port = 443
     handlers = ["tls", "http"]
 
+  [[services.http_handlers]]
+    handler = "spa"
+
 [http_service]
   internal_port = 80
   force_https = true
