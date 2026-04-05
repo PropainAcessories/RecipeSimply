@@ -8,6 +8,10 @@ app = "recipesimply-backend"
 [build]
   dockerfile = "Dockerfile.prod"
 
+[mounts]
+  source="mysqldata"
+  destination="/var/lib/mysql"
+
 [env]
   PORT = "8000"
 

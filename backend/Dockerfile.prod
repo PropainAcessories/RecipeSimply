@@ -22,6 +22,8 @@ RUN pip install --upgrade pip && pip wheel --no-cache-dir --wheel-dir /wheels -r
 # -----------------------------
 FROM python:3.12-slim
 
+RUN apt-get update && apt-get install -y default-mysql-server
+
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
