@@ -1,22 +1,13 @@
-import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Recipes from "./pages/Recipes";
 
 function App() {
-  const [message, setMessage] = useState("Loading...");
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/hello/")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setMessage(data.message);
-      })
-      .catch(() => setMessage("Error fetching message"));
-  }, []);
-
   return (
-    <div style={{ padding: "2rem", fontSize: "2rem" }}>
-      {message}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/recipes" element={<Recipes />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
