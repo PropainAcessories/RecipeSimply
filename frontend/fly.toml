@@ -1,6 +1,5 @@
 app = "recipesimply-frontend"
-primary_region = 'ord'
-console_command = '/code/manage.py shell'
+primary_region = "ord"
 
 [build]
   dockerfile = "Dockerfile.prod"
@@ -11,3 +10,13 @@ console_command = '/code/manage.py shell'
 
   [[services.ports]]
     port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+[http_service]
+  internal_port = 80
+  force_https = true
