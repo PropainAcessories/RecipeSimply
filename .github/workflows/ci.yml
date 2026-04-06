@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:18
+        image: postgres:16
         env:
           POSTGRES_USER: testuser
           POSTGRES_PASSWORD: testpass
@@ -38,8 +38,8 @@ jobs:
           python-version: "3.12"
 
       - name: Install backend dependencies
+        working-directory: backend
         run: |
-          cd backend
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
@@ -53,8 +53,7 @@ jobs:
           POSTGRES_HOST: 127.0.0.1
           POSTGRES_PORT: 5432
           SECRET_KEY: test
-        run: |
-          python manage.py migrate --noinput
+        run: python manage.py migrate --noinput
 
       - name: Run Django tests
         working-directory: backend
@@ -66,8 +65,7 @@ jobs:
           POSTGRES_HOST: 127.0.0.1
           POSTGRES_PORT: 5432
           SECRET_KEY: test
-        run: |
-          python manage.py test
+        run: python manage.py test
 
       # -------------------------
       # Frontend (Vite React)
@@ -78,11 +76,9 @@ jobs:
           node-version: "24"
 
       - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm install
+        working-directory: frontend
+        run: npm install
 
       - name: Build frontend
-        run: |
-          cd frontend
-          npm run build
+        working-directory: frontend
+        run: npm run build

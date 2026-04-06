@@ -2,18 +2,28 @@ import os
 from pathlib import Path
 import dj_database_url
 import environ
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = env("SECRET_KEY", default="dev-secret")
 NAME = env("POSTGRES", default="dummy")
 
-
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+# Security headers
+SECURE_HSTS_SECONDS = 31536000
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_REDIRECT_EXEMPT = [r"^health/$"]
+
+ALLOWED_HOSTS = ["recipesimply.fly.dev"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://recipesimply.fly.dev",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -41,18 +51,23 @@ CORS_ALLOWED_ORIGINS = [
     "https://recipesimply-frontend-icy-silence-8163.fly.dev",
 ]
 
-
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+WHITENOISE_MAX_AGE = 31536000
 ROOT_URLCONF = "RecipeSimply.urls"
 
 TEMPLATES = [
@@ -78,14 +93,10 @@ ASGI_APPLICATION = "RecipeSimply.asgi.application"
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=0,
+        conn_max_age=60,
         ssl_require=False,
     )
 }
-
-
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
