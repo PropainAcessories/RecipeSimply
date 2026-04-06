@@ -19,7 +19,11 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_REDIRECT_EXEMPT = [r"^health/$"]
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["recipesimply.fly.dev"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://recipesimply.fly.dev",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -48,7 +52,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 MIDDLEWARE = [
-    "backend.RecipeSimply.middleware.DisableSSLRedirectForHealth",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
