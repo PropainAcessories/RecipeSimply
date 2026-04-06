@@ -1,8 +1,13 @@
 from django.contrib import admin
-from django.urls import include, path
-
+from django.urls import path, include, re_path
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/", include("apps.api.urls")),
+    path('api/', include('apps.api.urls')),
+]
+
+# React catch‑all (must NOT catch static or assets)
+urlpatterns += [
+    re_path(r"^(?!api/|static/|assets/).*", TemplateView.as_view(template_name="index.html")),
 ]
