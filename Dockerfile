@@ -23,7 +23,7 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install system dependencies required for psycopg2/Postgres
+# System deps for psycopg2
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
@@ -31,15 +31,18 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python deps
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy project
-COPY . .
+# Copy backend code
+COPY backend/ ./backend/
+
+# Copy built frontend into Django static root
+COPY --from=frontend /app/frontend/dist ./backend/static/
 
 # Collect static files
 WORKDIR /app/backend
 RUN python manage.py collectstatic --noinput
 
-# Start Gunicorn via your entrypoint
-CMD ["bash", "/app/entrypoint.sh"]
+# Start Gunicorn
+CMD ["bash", "entrypoint.sh"]
