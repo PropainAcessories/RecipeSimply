@@ -2,11 +2,12 @@
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
+
 app = "recipesimply"
 primary_region = "ord"
 
-[build]
-  dockerfile = "Dockerfile"
+[processes]
+  app = "bash /app/entrypoint.sh"
 
 [http_service]
   internal_port = 8000
@@ -20,9 +21,13 @@ primary_region = "ord"
 [deploy]
   strategy = "immediate"
 
+
+
 [build]
   dockerfile = "Dockerfile"
+
 
 [env]
   DJANGO_SETTINGS_MODULE = "RecipeSimply.settings.prod"
   PORT = "8000"
+  
