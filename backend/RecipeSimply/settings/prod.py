@@ -9,7 +9,10 @@ DEBUG = False
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# Django must know where templates live
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_REDIRECT_EXEMPT = [r"^health/$"]
+
 TEMPLATES[0]['DIRS'] = [
     os.path.join(BASE_DIR, 'RecipeSimply', 'templates')
 ]
