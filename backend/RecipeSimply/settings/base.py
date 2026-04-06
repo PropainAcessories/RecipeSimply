@@ -10,6 +10,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = env("SECRET_KEY", default="dev-secret")
 NAME = env("POSTGRES", default="dummy")
 
+
 DEBUG = False
 
 # Security headers
@@ -93,10 +94,14 @@ ASGI_APPLICATION = "RecipeSimply.asgi.application"
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=60,
+        conn_max_age=0,
         ssl_require=False,
     )
 }
+
+
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "static"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
