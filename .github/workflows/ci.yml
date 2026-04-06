@@ -55,6 +55,7 @@ jobs:
           SECRET_KEY: test
         run: python manage.py migrate --noinput
 
+
       - name: Run Django tests
         working-directory: backend
         env:
