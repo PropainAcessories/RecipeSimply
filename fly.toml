@@ -2,7 +2,6 @@
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
-
 app = "recipesimply"
 primary_region = "ord"
 
@@ -17,6 +16,13 @@ primary_region = "ord"
   min_machines_running = 1
   max_machines_running = 1
   processes = ["app"]
+
+  [[http_service.checks]]
+    interval = "10s"
+    timeout = "5s"
+    grace_period = "30s"
+    method = "get"
+    path = "/"
 
 [deploy]
   strategy = "immediate"
