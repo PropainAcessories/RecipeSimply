@@ -3,7 +3,9 @@ name: CD
 on:
   push:
     branches:
+      - main
       - master
+      - database
 
 jobs:
   deploy:
@@ -12,6 +14,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Debug folder structure
+        run: ls -R .
 
       - name: Install Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
