@@ -8,7 +8,7 @@ env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = env("SECRET_KEY", default="dev-secret")
-NAME = env("MYSQL_DB", default="dummy")
+NAME = env("POSTGRES", default="dummy")
 
 
 DEBUG = False
