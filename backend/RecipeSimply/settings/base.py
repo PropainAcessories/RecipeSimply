@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 import dj_database_url
 import environ
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
@@ -13,18 +13,7 @@ NAME = env("POSTGRES", default="dummy")
 
 DEBUG = False
 
-# Security headers
-SECURE_HSTS_SECONDS = 31536000
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_REDIRECT_EXEMPT = [r"^health/$"]
-
-ALLOWED_HOSTS = ["recipesimply.fly.dev"]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://recipesimply.fly.dev",
-]
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -52,23 +41,18 @@ CORS_ALLOWED_ORIGINS = [
     "https://recipesimply-frontend-icy-silence-8163.fly.dev",
 ]
 
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-WHITENOISE_MAX_AGE = 31536000
 ROOT_URLCONF = "RecipeSimply.urls"
 
 TEMPLATES = [
