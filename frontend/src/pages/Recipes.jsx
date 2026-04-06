@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Recipes() {
   const url = `${import.meta.env.VITE_API_URL}/api/recipes/`;
@@ -6,7 +6,13 @@ function Recipes() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const hasFetched = useRef(false)
+
   useEffect(() => {
+    if (hasFetched.current) {
+      return;
+    }
+    hasFetched.current = true;
     console.log("Recipes component mounted");
 
     fetch(url)
@@ -20,7 +26,8 @@ function Recipes() {
         console.error("FETCH ERROR:", err);
         setLoading(false);
       });
-  },);
+  }, [url]); // <-- correct placement
+
 
 
   if (loading) {

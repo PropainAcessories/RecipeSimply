@@ -8,11 +8,11 @@ ENV PYTHONUNBUFFERED=1
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies required for psycopg2/Postgres
 RUN apt-get update && apt-get install -y \
     build-essential \
+    libpq-dev \
     pkg-config \
-    libmariadb-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -26,5 +26,5 @@ RUN chmod +x /app/entrypoint.sh
 # Expose Django port
 EXPOSE 8000
 
-# Default command (can be overridden in docker-compose)
+# Start Gunicorn via your entrypoint
 CMD ["bash", "/app/entrypoint.sh"]

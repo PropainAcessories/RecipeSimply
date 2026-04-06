@@ -11,18 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8
+      postgres:
+        image: postgres:18
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
         ports:
-          - 3306:3306
+          - 5432:5432
         options: >-
-          --health-cmd="mysqladmin ping --silent"
+          --health-cmd="pg_isready -U testuser"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     steps:
       - name: Checkout repository
@@ -45,11 +46,12 @@ jobs:
       - name: Run Django migrations
         working-directory: backend
         env:
-          MYSQL_DB: testdb
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_PORT: 3306
+          DJANGO_SETTINGS_MODULE: RecipeSimply.settings.dev
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_PORT: 5432
           SECRET_KEY: test
         run: |
           python manage.py migrate --noinput
@@ -57,11 +59,12 @@ jobs:
       - name: Run Django tests
         working-directory: backend
         env:
-          MYSQL_DB: testdb
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_PORT: 3306
+          DJANGO_SETTINGS_MODULE: RecipeSimply.settings.dev
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_PORT: 5432
           SECRET_KEY: test
         run: |
           python manage.py test
@@ -72,7 +75,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install frontend dependencies
         run: |
