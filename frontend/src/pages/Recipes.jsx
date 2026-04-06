@@ -20,7 +20,8 @@ function Recipes() {
         console.error("FETCH ERROR:", err);
         setLoading(false);
       });
-  },);
+  }, [url]); // <-- correct placement
+
 
 
   if (loading) {
