@@ -14,33 +14,40 @@ RUN npm run build-prod
 ###############################################
 # BACKEND BUILD
 ###############################################
-FROM python:3.12-slim AS base
+FROM python:3.12-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
+# Set working directory
 WORKDIR /app
 
-# System deps for psycopg2
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
-    pkg-config \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python deps
-COPY backend/requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+# Copy backend code into /app/backend
+COPY backend/ /app/backend/
 
-# Copy backend code
-COPY backend/ ./backend/
+# Copy entrypoint
+COPY backend/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-# Copy built frontend into Django static root
-COPY --from=frontend /app/frontend/dist ./backend/static/
+# Copy requirements
+COPY requirements.txt /app/requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Move into backend folder for Django commands
+WORKDIR /app/backend
 
 # Collect static files
 WORKDIR /app/backend
 RUN python manage.py collectstatic --noinput
 
-# Start Gunicorn
-CMD ["bash", "entrypoint.sh"]
+# Expose port
+EXPOSE 8000
+
+# Default command (Gunicorn)
+CMD ["gunicorn", "RecipeSimply.wsgi:application", "--bind", "0.0.0.0:8000"]

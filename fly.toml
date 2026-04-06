@@ -10,6 +10,7 @@ primary_region = "ord"
   dockerfile = "../Dockerfile"
 
 [env]
+  DJANGO_SETTINGS_MODULE = "RecipeSimply.settings.prod"
   PORT = "8000"
 
 [[services]]
@@ -23,3 +24,8 @@ primary_region = "ord"
   [[services.ports]]
     port = 443
     handlers = ["tls", "http"]
+
+  [[services.tcp_checks]]
+    interval = "15s"
+    timeout = "2s"
+
