@@ -17,12 +17,12 @@ primary_region = "ord"
   max_machines_running = 1
   processes = ["app"]
 
-  [[http_service.checks]]
-    interval = "10s"
-    timeout = "5s"
-    grace_period = "30s"
-    method = "get"
-    path = "/"
+[checks]
+  [checks.health]
+    type = "http"
+    interval = "15s"
+    timeout = "2s"
+    path = "/health/"
 
 [deploy]
   strategy = "immediate"
