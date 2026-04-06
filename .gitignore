@@ -30,6 +30,7 @@ static/
 *.env
 backend/.env
 frontend/.env
+.env.development
 id_ed69420_GithubActions
 id_ed69420_GithubActions.pub
 

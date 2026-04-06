@@ -31,9 +31,14 @@ INSTALLED_APPS = [
     "corsheaders",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://recipesimply-frontend-icy-silence-8163.fly.dev",
+]
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://recipesimply-frontend-icy-silence-8163.fly.dev",
 ]
 
 

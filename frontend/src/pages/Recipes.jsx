@@ -1,21 +1,26 @@
 import { useEffect, useState } from "react";
-import.meta.env.VITE_API_URL
 
 function Recipes() {
+  const url = `${import.meta.env.VITE_API_URL}/api/recipes/`;
+  console.log("FETCHING:", url);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log("Recipes component mounted");
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/recipes/`)
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setRecipes(data);
+        console.log("DATA:", data);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-  }, []);
+      .catch((err) => {
+        console.error("FETCH ERROR:", err);
+        setLoading(false);
+      });
+  },);
 
 
   if (loading) {
@@ -38,14 +43,18 @@ function Recipes() {
             borderRadius: "8px",
           }}
         >
-          <h2>{recipe.title}</h2>
+          {/* FIX: Django uses "name", not "title" */}
+          <h2>{recipe.name}</h2>
+
+          {/* FIX: Django uses "description" or "summary" */}
           <p>{recipe.description}</p>
 
           <h3>Ingredients</h3>
           <ul>
             {recipe.ingredients.map((ing) => (
               <li key={ing.id}>
-                {ing.amount} {ing.name}
+                {/* FIX: Django often uses "quantity" + "name" */}
+                {ing.quantity} {ing.name}
               </li>
             ))}
           </ul>
@@ -53,7 +62,10 @@ function Recipes() {
           <h3>Steps</h3>
           <ol>
             {recipe.steps.map((step) => (
-              <li key={step.id}>{step.instruction}</li>
+              <li key={step.id}>
+                {/* FIX: Django uses "instruction" or "text" */}
+                {step.instruction}
+              </li>
             ))}
           </ol>
         </div>

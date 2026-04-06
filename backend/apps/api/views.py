@@ -6,6 +6,7 @@ from .serializers import RecipeSerializer
 @api_view(["GET"])
 def recipe_list(request):
     recipes = Recipe.objects.all()
+    print("Recipes count:", recipes.count())  # <--- ADD THIS
     serializer = RecipeSerializer(recipes, many=True)
     return Response(serializer.data)
 
