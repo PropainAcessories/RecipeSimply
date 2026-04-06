@@ -1,9 +1,0 @@
-Django>=6.0
-djangorestframework
-psycopg2-binary
-dj-database-url
-python-dotenv
-django-environ
-django-cors-headers
-gunicorn
-whitenoise
