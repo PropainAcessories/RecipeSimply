@@ -1,4 +1,4 @@
-app = "recipesimply-backend"
+app = "recipesimply"
 primary_region = "ord"
 
 [build]
