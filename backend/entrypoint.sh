@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-python manage.py migrate --noinput
-gunicorn RecipeSimply.wsgi:application --bind 0.0.0.0:8000
+echo "Starting Gunicorn..."
+exec gunicorn RecipeSimply.wsgi:application --bind 0.0.0.0:8000

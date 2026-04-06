@@ -1,6 +1,7 @@
 Django>=6.0
 djangorestframework
-mysqlclient
+psycopg2-binary
+dj-database-url
 python-dotenv
 django-environ
 django-cors-headers
