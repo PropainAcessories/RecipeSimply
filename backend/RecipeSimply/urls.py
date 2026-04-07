@@ -8,13 +8,8 @@ def health(request):
 
 
 urlpatterns = [
-    path("health/", health),
     path("", TemplateView.as_view(template_name="index.html")),
+    path("health/", health),
     path('admin/', admin.site.urls),
     path('api/', include('apps.api.urls')),
-]
-
-# React catch‑all (must NOT catch static or assets)
-urlpatterns += [
-   re_path(r"^(?!api/|static/|assets/|$).*", TemplateView.as_view(template_name="index.html")),
 ]

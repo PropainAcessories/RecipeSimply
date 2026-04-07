@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   base: "/static/",
@@ -7,9 +7,7 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "assets",
     target: "esnext",
-    cssMinify: "esbuild",
     modulePreload: { polyfill: false },
-    rollupOptions: {},
   },
   plugins: [react()],
-})
+});

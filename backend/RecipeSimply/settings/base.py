@@ -17,6 +17,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
+    "whitenoise.runserver_nostatic",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -32,7 +33,7 @@ INSTALLED_APPS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://recipesimply-frontend-icy-silence-8163.fly.dev",
+    "https://recipesimply",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -58,7 +59,7 @@ ROOT_URLCONF = "RecipeSimply.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "backend" / "RecipeSimply" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
