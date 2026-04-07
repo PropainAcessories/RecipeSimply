@@ -2,7 +2,7 @@
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
-app = 'recipesimply-frontend-icy-silence-8163'
+app = 'recipesimply'
 primary_region = 'ord'
 
 [build]
