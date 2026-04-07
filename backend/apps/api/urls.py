@@ -1,12 +1,7 @@
-from django.contrib import admin
-from django.urls import path, include
-from django.http import JsonResponse
-
-def root(request):
-    return JsonResponse({"status": "ok", "app": "RecipeSimply API"})
+from django.urls import path
+from .views import recipe_list, recipe_detail
 
 urlpatterns = [
-    path("", root),  # Root health check
-    path("admin/", admin.site.urls),
-    path("api/", include("apps.api.urls")),
+    path("recipes/", recipe_list, name="recipe-list"),
+    path("recipes/<int:pk>/", recipe_detail, name="recipe-detail"),
 ]
