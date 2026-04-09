@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
+# WTF IS THIS?
 class Recipe(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -10,7 +10,6 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
 
-
 class Ingredient(models.Model):
     recipe = models.ForeignKey(Recipe, related_name="ingredients", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -18,7 +17,6 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f"{self.amount} {self.name}"
-
 
 class Step(models.Model):
     recipe = models.ForeignKey(Recipe, related_name="steps", on_delete=models.CASCADE)
@@ -30,7 +28,6 @@ class Step(models.Model):
 
     def __str__(self):
         return f"Step {self.order}"
-
 
 class UserRecipeFavorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
