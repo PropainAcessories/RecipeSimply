@@ -2,6 +2,9 @@ name: CD
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ "*" ]
+
 
 jobs:
   deploy-frontend:
