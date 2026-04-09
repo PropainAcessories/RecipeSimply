@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 from django.views.generic import TemplateView
 from django.http import JsonResponse
 
@@ -9,6 +9,7 @@ def health(request):
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="index.html")),
+    path("api-auth/", include("rest_framework.urls")),
     path("health/", health),
     path('admin/', admin.site.urls),
     path('api/', include('apps.api.urls')),
