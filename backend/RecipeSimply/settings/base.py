@@ -9,8 +9,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = env("SECRET_KEY", default="dev-secret")
 NAME = env("POSTGRES", default="dummy")
-
-
+SECURE_SSL_REDIRECT = True
 DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
@@ -49,6 +48,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -72,9 +72,14 @@ TEMPLATES = [
     },
 ]
 
+# Deployment security settings
 WSGI_APPLICATION = "RecipeSimply.wsgi.application"
 ASGI_APPLICATION = "RecipeSimply.asgi.application"
-
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 DATABASES = {
     "default": dj_database_url.config(

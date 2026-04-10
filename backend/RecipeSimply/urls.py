@@ -6,7 +6,7 @@ from django.http import JsonResponse
 def health(request):
     return JsonResponse({"status": "ok"})
 
-
+# App internal routes. (People, settings, users/accounts, and searching)
 urlpatterns = [
     path("", TemplateView.as_view(template_name="index.html")),
     path("api-auth/", include("rest_framework.urls")),
