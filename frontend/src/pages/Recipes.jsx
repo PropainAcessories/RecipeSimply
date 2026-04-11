@@ -3,32 +3,34 @@ import { useEffect, useRef, useState } from "react";
 function Recipes() {
   const url = `${import.meta.env.VITE_API_URL}/api/recipes/`;
   console.log("FETCHING:", url);
+
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const hasFetched = useRef(false)
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (hasFetched.current) {
-      return;
-    }
+    if (hasFetched.current) return;
     hasFetched.current = true;
+
     console.log("Recipes component mounted");
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        setRecipes(data);
+    const getRecipes = async () => {
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
         console.log("DATA:", data);
-        setLoading(false);
-      })
-      .catch((err) => {
+        setRecipes(data);
+      } catch (err) {
         console.error("FETCH ERROR:", err);
+      } finally {
         setLoading(false);
-      });
-  }, [url]); // <-- correct placement
+      }
+    };
 
-
+    getRecipes();
+  }, [url]);
 
   if (loading) {
     return <p style={{ padding: "1rem" }}>Loading recipes...</p>;
@@ -50,17 +52,13 @@ function Recipes() {
             borderRadius: "8px",
           }}
         >
-          {/* FIX: Django uses "name", not "title" */}
           <h2>{recipe.name}</h2>
-
-          {/* FIX: Django uses "description" or "summary" */}
           <p>{recipe.description}</p>
 
           <h3>Ingredients</h3>
           <ul>
             {recipe.ingredients.map((ing) => (
               <li key={ing.id}>
-                {/* FIX: Django often uses "quantity" + "name" */}
                 {ing.quantity} {ing.name}
               </li>
             ))}
@@ -69,10 +67,7 @@ function Recipes() {
           <h3>Steps</h3>
           <ol>
             {recipe.steps.map((step) => (
-              <li key={step.id}>
-                {/* FIX: Django uses "instruction" or "text" */}
-                {step.instruction}
-              </li>
+              <li key={step.id}>{step.instruction}</li>
             ))}
           </ol>
         </div>
