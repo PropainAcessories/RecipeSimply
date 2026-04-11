@@ -9,7 +9,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = env("SECRET_KEY", default="dev-secret")
 NAME = env("POSTGRES", default="dummy")
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
@@ -75,8 +75,8 @@ TEMPLATES = [
 # Deployment security settings
 WSGI_APPLICATION = "RecipeSimply.wsgi.application"
 ASGI_APPLICATION = "RecipeSimply.asgi.application"
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 SECURE_HSTS_SECONDS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -94,7 +94,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+        "rest_framework.permissions.AllowAny"
     ]
 }
 

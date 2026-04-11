@@ -16,6 +16,6 @@ def recipe_detail(request, pk):
         recipe = Recipe.objects.get(pk=pk)
     except Recipe.DoesNotExist:
         return Response({"error": "Recipe not found"}, status=404)
-
+    
     serializer = RecipeSerializer(recipe)
     return Response(serializer.data)
