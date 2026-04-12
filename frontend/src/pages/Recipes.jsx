@@ -23,7 +23,7 @@ function Recipes() {
         console.log("DATA:", data);
         setRecipes(data);
       } catch (err) {
-        console.error("FETCH ERROR:", err);
+        console.error("ERROR:", err);
       } finally {
         setLoading(false);
       }
