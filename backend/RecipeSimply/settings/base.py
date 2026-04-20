@@ -24,6 +24,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third‑party
     "rest_framework",
+    "rest_framework.authtoken",
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 
     # Local apps
     "apps.api",
@@ -94,6 +98,8 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.permissions.AllowAny"
     ]
 }
