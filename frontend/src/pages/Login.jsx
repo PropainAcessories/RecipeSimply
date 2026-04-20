@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ErrorModal from "../components/ErrorModal";
 
 function Login() {
+  const url = `${import.meta.env.VITE_API_URL}/api/login/`;
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -19,9 +20,9 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+    //TODO: Set dynamic url
     try {
-      const res = await fetch("http://localhost:8000/users/login/", {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
