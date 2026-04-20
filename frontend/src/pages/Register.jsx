@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Register() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     username: "",
+    email: "",
     password: "",
   });
 
@@ -20,7 +21,7 @@ function Login() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:8000/users/login/", {
+      const res = await fetch("http://localhost:8000/users/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -29,7 +30,7 @@ function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Login failed");
+        setError(data.error || "Registration failed");
         return;
       }
 
@@ -37,15 +38,15 @@ function Login() {
       localStorage.setItem("access", data.access);
       localStorage.setItem("refresh", data.refresh);
 
-      navigate("/");
+      navigate("/"); // redirect to home
     } catch (err) {
-      setError("Error: ", err);
+      console.log("Error: ", err);
     }
   };
 
   return (
     <div className="auth-container">
-      <h2>Login</h2>
+      <h2>Create Account</h2>
 
       {error && <p className="error">{error}</p>}
 
@@ -59,6 +60,13 @@ function Login() {
         />
 
         <input
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+        />
+
+        <input
           name="password"
           type="password"
           placeholder="Password"
@@ -67,10 +75,10 @@ function Login() {
           required
         />
 
-        <button type="submit">Login</button>
+        <button type="submit">Register</button>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default Register;
