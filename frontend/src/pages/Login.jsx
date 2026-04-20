@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ErrorModal from "../components/ErrorModal";
 
 function Login() {
   const navigate = useNavigate();
@@ -33,21 +34,18 @@ function Login() {
         return;
       }
 
-      // Save tokens
       localStorage.setItem("access", data.access);
       localStorage.setItem("refresh", data.refresh);
 
       navigate("/");
-    } catch (err) {
-      setError("Error: ", err);
+    } catch {
+      setError("Unable to connect to server");
     }
   };
 
   return (
     <div className="auth-container">
       <h2>Login</h2>
-
-      {error && <p className="error">{error}</p>}
 
       <form onSubmit={handleSubmit}>
         <input
@@ -69,6 +67,8 @@ function Login() {
 
         <button type="submit">Login</button>
       </form>
+
+      <ErrorModal message={error} onClose={() => setError("")} />
     </div>
   );
 }
