@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 # WTF IS THIS?
 class Recipe(models.Model):
@@ -30,7 +30,12 @@ class Step(models.Model):
         return f"Step {self.order}"
 
 class UserRecipeFavorite(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+    settings.AUTH_USER_MODEL,
+    on_delete=models.CASCADE,
+    related_name="favorites"
+    )
+    
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 

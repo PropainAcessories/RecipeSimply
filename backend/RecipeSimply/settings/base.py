@@ -44,6 +44,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://recipesimply",
 ]
 
+AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
