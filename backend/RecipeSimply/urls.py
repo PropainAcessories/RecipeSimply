@@ -11,6 +11,7 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="index.html")),
     path("api-auth/", include("rest_framework.urls")),
     path("health/", health),
-    path('admin/', admin.site.urls),
     path('api/', include('apps.api.urls')),
+    path("api/", include("apps.users.urls")),  
+    path("admin/", admin.site.urls),
 ]

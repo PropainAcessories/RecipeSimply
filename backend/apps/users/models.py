@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 
-from common.models import IndexedTimeStampedModel
+
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **kwargs):
@@ -24,14 +24,15 @@ class UserManager(BaseUserManager):
         user.is_superuser = True
         user.is_staff = True
 
-        if user.get("is_staff") is not True:
-            raise ValueError("Not Admin, get the F*ck out.")
-        if user.get("is_superuser") is not True:
-            raise ValueError("Not Admin, get the F*ck out.")
+        if user.is_staff is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if user.is_superuser is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
+        
         user.save(using=self.db)
         return user
 
-class User(AbstractBaseUser, PermissionsMixin, IndexedTimeStampedModel):
+class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(db_index=True, max_length=255, unique=True)
     email = models.CharField(db_index=True, max_length=255, unique=True)
     is_staff = models.BooleanField(
@@ -40,6 +41,9 @@ class User(AbstractBaseUser, PermissionsMixin, IndexedTimeStampedModel):
     is_active = models.BooleanField(
         default=True, help_text="Monitors activity."
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = UserManager()
 
