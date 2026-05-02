@@ -1,64 +1,72 @@
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework import status
-
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer
+from rest_framework_simplejwt.views import TokenRefreshView
+from .auth.jwt import blacklist_refresh_token, generate_tokens_for_user
+
+from django.contrib.auth import get_user_model
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, ProfileUpdateSerializer
+
+User = get_user_model
+# These do what they say on the can.
+
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        user = response.data  # contains username/email
+        user_obj = User.objects.get(email=user["email"])
+        tokens = generate_tokens_for_user(user_obj)
+        return Response(tokens, status=201)
+
+class LoginView(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
-@api_view(["POST"])
-def register_user(request):
-    serializer = UserSerializer(data=request.data)
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    if serializer.is_valid():
-        user = serializer.save()
-        refresh = RefreshToken.for_user(user)
+    def post(self, request):
+        refresh = request.data.get("refresh")
+        if not refresh:
+            return Response({"detail": "Refresh token required"}, status=400)
 
-        return Response({
-            "message": "Account created successfully",
-            "user": UserSerializer(user).data,
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-        }, status=status.HTTP_201_CREATED)
+        if blacklist_refresh_token(refresh):
+            return Response(status=status.HTTP_205_RESET_CONTENT)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Invalid token"}, status=400)
+
+# Custom refresh token, no valuable data to secure
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user, context={"request": request})
+        return Response(serializer.data)
 
 
-@api_view(["POST"])
-def login_user(request):
-    username = request.data.get("username")
-    password = request.data.get("password")
+class ProfileUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    user = authenticate(username=username, password=password)
-
-    if not user:
-        return Response(
-            {"error": "Invalid username or password"},
-            status=status.HTTP_401_UNAUTHORIZED
+    def put(self, request):
+        serializer = ProfileUpdateSerializer(
+            request.user,
+            data=request.data,
+            partial=True,
         )
-
-    refresh = RefreshToken.for_user(user)
-
-    return Response({
-        "message": "Login successful",
-        "refresh": str(refresh),
-        "access": str(refresh.access_token),
-        "user": UserSerializer(user).data
-    })
-
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def logout_user(request):
-    try:
-        refresh_token = request.data["refresh"]
-        token = RefreshToken(refresh_token)
-        token.blacklist()
-
-        return Response({"message": "Logged out successfully"}, status=200)
-
-    except Exception:
-        return Response({"error": "Invalid refresh token"}, status=400)
+        if serializer.is_valid():
+            serializer.save()
+            # return full user data after update
+            full = UserSerializer(request.user, context={"request": request})
+            return Response(full.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

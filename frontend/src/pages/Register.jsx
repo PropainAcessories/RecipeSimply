@@ -17,7 +17,7 @@ function Register() {
   };
 
   const handleSubmit = async (e) => {
-    const url = `${import.meta.env.VITE_API_URL}/api/login/`;
+    const url = `${import.meta.env.VITE_API_URL}/api/auth/register/`;
     e.preventDefault();
     setError("");
 
@@ -29,6 +29,7 @@ function Register() {
       });
 
       const data = await res.json();
+      console.log("REGISTER ERROR:", data);
 
       if (!res.ok) {
         setError(data.error || "Registration failed");

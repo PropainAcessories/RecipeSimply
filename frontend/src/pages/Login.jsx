@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ErrorModal from "../components/ErrorModal";
+import "./Login.css";
 
 function Login() {
-  const url = `${import.meta.env.VITE_API_URL}/api/login/`;
+  const url = `${import.meta.env.VITE_API_URL}/api/auth/login/`;
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -20,7 +23,8 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    //TODO: Set dynamic url
+    setLoading(true);
+
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -31,7 +35,12 @@ function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Login failed");
+        setError(
+          data.error ||
+          data.detail ||
+          "Invalid email or password"
+        );
+        setLoading(false);
         return;
       }
 
@@ -42,34 +51,60 @@ function Login() {
     } catch {
       setError("Unable to connect to server");
     }
+
+    setLoading(false);
   };
 
   return (
     <div className="auth-container">
       <h2>Login</h2>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          required
-        />
+      <form onSubmit={handleSubmit} className="auth-form">
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
+        <div className="input-group">
+          <label>Email</label>
+          <input
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <button type="submit">Login</button>
+        <div className="input-group">
+          <label>Password</label>
+          <div className="password-wrapper">
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" className="auth-btn" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
 
       <ErrorModal message={error} onClose={() => setError("")} />
+
+      <div className="auth-link">
+        <span>Don't have an account? </span>
+        <a href="/register">Register</a>
+      </div>
     </div>
   );
 }
