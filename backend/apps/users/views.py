@@ -9,7 +9,7 @@ from .auth.jwt import blacklist_refresh_token, generate_tokens_for_user
 from django.contrib.auth import get_user_model
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, ProfileUpdateSerializer
 
-User = get_user_model
+User = get_user_model()
 # These do what they say on the can.
 
 class RegisterView(generics.CreateAPIView):
