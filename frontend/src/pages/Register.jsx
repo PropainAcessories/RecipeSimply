@@ -17,7 +17,8 @@ function Register() {
   };
 
   const handleSubmit = async (e) => {
-    const url = `${import.meta.env.VITE_API_URL}/api/auth/register/`;
+    const API = "/api"
+    const url = `${API}/api/auth/register/`;
     e.preventDefault();
     setError("");
 
