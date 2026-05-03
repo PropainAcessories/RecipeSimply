@@ -4,7 +4,8 @@ import ErrorModal from "../components/ErrorModal";
 import "./Login.css";
 
 function Login() {
-  const url = `${import.meta.env.VITE_API_URL}/api/auth/login/`;
+  const API = "/api"
+  const url = `${API}/api/auth/register/`;
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
