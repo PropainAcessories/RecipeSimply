@@ -15,7 +15,7 @@ export default function LikeButton({ recipeId, isLiked }) {
       onClick={toggleLike}
       className="mt-4 px-4 py-2 rounded-lg text-white 
                  transition w-full sm:w-auto
-                 bg-red-500 hover:bg-red-600 active:scale-95"
+                 bg-red-500 hover:bg-red-200 active:scale-95"
     >
       {liked ? "❤️ Liked" : "🤍 Like"}
     </button>

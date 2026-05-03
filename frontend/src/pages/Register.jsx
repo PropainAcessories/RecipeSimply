@@ -5,7 +5,7 @@ import "./Authform.css";
 
 function Register() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register } = useAuth();   // <-- use register from context
 
   const [form, setForm] = useState({
     username: "",
@@ -34,48 +34,30 @@ function Register() {
     e.preventDefault();
     setError("");
 
+    // Password match check
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match");
       return;
     }
 
+    // Password strength check
     const passwordError = validatePassword(form.password);
     if (passwordError) {
       setError(passwordError);
       return;
     }
 
-    const API = import.meta.env.VITE_API_URL;
+    // Call AuthContext.register()
+    const result = await register(
+      form.username,
+      form.email,
+      form.password
+    );
 
-    try {
-      const res = await fetch(`${API}/auth/register/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: form.username,
-          email: form.email,
-          password: form.password,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Registration failed");
-        return;
-      }
-
-      // Auto-login after successful registration
-      const result = await login(form.email, form.password);
-
-      if (result.success) {
-        navigate("/");
-      } else {
-        setError(result.message);
-      }
-    } catch (err) {
-      console.log("Error:", err);
-      setError("Unable to connect to server");
+    if (result.success) {
+      navigate("/");
+    } else {
+      setError(result.message || "Registration failed");
     }
   };
 
@@ -111,7 +93,7 @@ function Register() {
         <input
           name="password"
           type="password"
-          placeholder="Password"
+          placeholder="Password One Number, One UpperCase Letter"
           value={form.password}
           onChange={handleChange}
           required
@@ -130,7 +112,7 @@ function Register() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-300 transition"
         >
           Register
         </button>

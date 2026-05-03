@@ -20,7 +20,7 @@ function Navbar() {
     <nav className="w-full bg-white shadow-md px-6 py-4 flex items-center justify-between">
       {/* Left side */}
       <div className="flex items-center gap-3">
-        <Link to="/" className="text-xl font-bold text-blue-600">
+        <Link to="/" className="text-xl font-bold text-blue-600 hover:bg-gray-200 transition">
           RecipeSimply
         </Link>
 
@@ -40,7 +40,7 @@ function Navbar() {
       <div className="flex items-center gap-4">
         {isAuthenticated ? (
           <>
-            <Link to="/profile" className="flex items-center gap-2">
+            <Link to="/profile" className="flex items-center gap-2 hover:bg-gray-300 transition">
               <img
                 src={avatarSrc}
                 alt="avatar"
@@ -51,7 +51,7 @@ function Navbar() {
 
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-300 transition"
             >
               Logout
             </button>

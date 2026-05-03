@@ -5,6 +5,8 @@ from .views.like import LikeToggleView
 from .views.feed import FeedView
 from .views.profile import UserRecipesView, UserLikedRecipesView
 
+# App specific routes, feed, forum, comments/likes
+
 urlpatterns = [
     # Feed
     path("recipes/feed/", FeedView.as_view(), name="recipe-feed"),

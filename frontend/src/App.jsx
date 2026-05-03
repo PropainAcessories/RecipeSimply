@@ -6,6 +6,10 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import RecipeDetail from "./components/RecipeDetail";
+import CreateRecipe from "./components/CreateRecipe";
+
+
 
 // CHANGE STATIC PATH TO "/" BEFORE DEPLOYING TO PROD!
 function App() {

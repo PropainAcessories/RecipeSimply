@@ -1,109 +1,85 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import axios from "../utils/axios";
 
-export const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("access")
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const API = import.meta.env.VITE_API_URL;
-
-  // Load current user
-  const loadUser = useCallback(async () => {
-    const token = localStorage.getItem("access");
-    if (!token) {
-      setUser(null);
-      setIsAuthenticated(false);
+  const loadUser = async () => {
+    const access = localStorage.getItem("access");
+    if (!access) {
       setLoading(false);
       return;
     }
 
     try {
-      const res = await fetch(`${API}/auth/me/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data);
-        setIsAuthenticated(true);
-      } else {
-        logout();
-      }
-    } catch (err) {
-      console.error("Failed to load user:", err);
-      logout();
+      const res = await axios.get("/users/me/");
+      setUser(res.data);
+      setIsAuthenticated(true);
+    } catch {
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setLoading(false);
+  // Load user on first mount
+  useEffect(() => {
+    loadUser();
   }, []);
 
-  // Login
   const login = async (email, password) => {
     try {
-      const res = await fetch(`${API}/auth/login/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const res = await axios.post("/auth/login/", {
+        email,
+        password,
       });
 
-      if (!res.ok) {
-        throw new Error("Invalid credentials");
-      }
+      const { access, refresh } = res.data;
+      localStorage.setItem("access", access);
+      localStorage.setItem("refresh", refresh)
 
-      const data = await res.json();
-
-      localStorage.setItem("access", data.access);
-      localStorage.setItem("refresh", data.refresh);
-
-      setIsAuthenticated(true);
       await loadUser();
 
       return { success: true };
     } catch (err) {
-      return { success: false, message: err.message };
+      console.error("Login failed:", err);
+      return { success: false, message: "Invalid credentials" };
     }
   };
 
-  // Logout
+  const register = async (username, email, password) => {
+    try {
+      await axios.post("/auth/register/", {
+        username,
+        email,
+        password,
+      });
+
+      // Auto-login
+      return await login(email, password);
+    } catch (err) {
+      console.error("Registration failed:", err);
+      return { success: false, message: "Registration failed" };
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
     setUser(null);
     setIsAuthenticated(false);
   };
 
-  // Update user instantly (used after avatar change)
-  const updateUser = (newUserData) => {
-    setUser(newUserData);
-  };
+  const value = { user, isAuthenticated, loading, login, logout, register };
 
-  // Load user on mount
-  useEffect(() => {
-    loadUser();
-  }, [loadUser]);
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated,
-        loading,
-        login,
-        logout,
-        updateUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
+}
