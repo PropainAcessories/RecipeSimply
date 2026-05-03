@@ -39,10 +39,11 @@ COPY backend/ ./backend/
 ###############################################
 
 # Copy Vite assets → Django static root
-COPY --from=frontend /app/frontend/dist/assets /app/static/assets
+# Copy Vite assets → Django static root
+COPY --from=frontend /app/frontend/dist/assets /app/backend/RecipeSimply/static/assets
 
 # Copy Vite index.html → Django template directory
-COPY --from=frontend /app/frontend/dist/assets /app/backend/RecipeSimply/static/assets
+COPY --from=frontend /app/frontend/dist/index.html /app/backend/RecipeSimply/templates/index.html
 
 ###############################################
 # DJANGO COLLECTSTATIC
