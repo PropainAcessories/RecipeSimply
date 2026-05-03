@@ -40,6 +40,8 @@ DATABASES["default"] = dj_database_url.config(
     ssl_require=True,
 )
 
+AUTH_USER_MODEL = "users.User"
+
 # -----------------------------
 # SECURITY HARDENING
 # -----------------------------
