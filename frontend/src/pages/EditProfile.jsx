@@ -1,52 +1,34 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import "./EditProfile.css"
 
 function EditProfile() {
-  const API_URL = import.meta.env.VITE_API_URL;
-  const [user, setUser] = useState(null);
-  const [username, setUsername] = useState("");
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
 
-  useEffect(() => {
-    const access = localStorage.getItem("access");
-    if (!access) {
-      navigate("/login");
-      return;
-    }
+  const [username, setUsername] = useState(user?.username || "");
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [preview, setPreview] = useState(
+    user?.avatar_url ||
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        user?.username || "User"
+      )}`
+  );
+  const [error, setError] = useState("");
 
-    const fetchUser = async () => {
-      const res = await fetch(`${API_URL}/api/users/me/`, {
-        headers: {
-          Authorization: `Bearer ${access}`,
-        },
-      });
+  const API = import.meta.env.VITE_API_URL;
 
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data);
-        setUsername(data.username || "");
-        setPreview(
-          data.avatar_url ||
-            "https://ui-avatars.com/api/?name=" +
-              encodeURIComponent(data.username || "User")
-        );
-      } else {
-        navigate("/login");
-      }
-    };
-
-    fetchUser();
-  }, [API_URL, navigate]);
+  if (!isAuthenticated) {
+    navigate("/login");
+    return null;
+  }
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setAvatarFile(file);
     if (file) {
-      const url = URL.createObjectURL(file);
-      setPreview(url);
+      setPreview(URL.createObjectURL(file));
     }
   };
 
@@ -55,17 +37,13 @@ function EditProfile() {
     setError("");
 
     const access = localStorage.getItem("access");
-    if (!access) {
-      navigate("/login");
-      return;
-    }
 
     const formData = new FormData();
-    if (username) formData.append("username", username);
+    formData.append("username", username);
     if (avatarFile) formData.append("avatar", avatarFile);
 
     try {
-      const res = await fetch(`${API_URL}/api/users/me/update/`, {
+      const res = await fetch(`${API}/auth/me/update/`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${access}`,
@@ -86,55 +64,50 @@ function EditProfile() {
     }
   };
 
-  if (!user) return <div style={{ padding: 20 }}>Loading...</div>;
-
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Edit Profile</h1>
+    <div className="max-w-lg mx-auto mt-16 p-8 bg-white shadow-lg rounded-xl">
+      <h1 className="text-3xl font-semibold mb-6 text-center">Edit Profile</h1>
 
-      {preview && (
+      <div className="flex flex-col items-center mb-6">
         <img
           src={preview}
           alt="preview"
-          style={{
-            width: 96,
-            height: 96,
-            borderRadius: "50%",
-            objectFit: "cover",
-            border: "3px solid #eee",
-            marginBottom: 16,
-          }}
+          className="w-28 h-28 rounded-full border-4 border-gray-200 object-cover mb-4"
         />
-      )}
+      </div>
 
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div style={{ marginBottom: 12 }}>
-          <label>
-            Username
-            <br />
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              style={{ padding: 6, width: 250 }}
-            />
-          </label>
+      <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
+        <div>
+          <label className="block mb-1 font-medium">Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+          />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label>
-            Avatar
-            <br />
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-          </label>
+        <div>
+          <label className="block mb-1 font-medium">Avatar</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full"
+          />
         </div>
 
         {error && (
-          <div style={{ color: "red", marginBottom: 12 }}>{error}</div>
+          <p className="text-red-600 bg-red-100 border border-red-300 px-4 py-2 rounded">
+            {error}
+          </p>
         )}
 
-        <button type="submit" style={{ padding: "6px 12px" }}>
-          Save
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          Save Changes
         </button>
       </form>
     </div>

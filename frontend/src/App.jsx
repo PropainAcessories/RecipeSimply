@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+
 // CHANGE STATIC PATH TO "/" BEFORE DEPLOYING TO PROD!
 function App() {
   return (

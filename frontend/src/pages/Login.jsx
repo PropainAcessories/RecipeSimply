@@ -1,20 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ErrorModal from "../components/ErrorModal";
-import "./Login.css";
+import { useAuth } from "../context/AuthContext";
+import "./Login.css"
 
 function Login() {
-  const API = "/api"
-  const url = `${API}/api/auth/register/`;
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -24,88 +21,53 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+    const result = await login(form.email, form.password);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(
-          data.error ||
-          data.detail ||
-          "Invalid email or password"
-        );
-        setLoading(false);
-        return;
-      }
-
-      localStorage.setItem("access", data.access);
-      localStorage.setItem("refresh", data.refresh);
-
+    if (result.success) {
       navigate("/");
-    } catch {
-      setError("Unable to connect to server");
+    } else {
+      setError(result.message);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
+    <div className="max-w-md mx-auto mt-20 p-8 bg-white shadow-lg rounded-xl">
+      <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
 
-      <form onSubmit={handleSubmit} className="auth-form">
+      {error && (
+        <p className="bg-red-100 text-red-700 border border-red-300 px-4 py-2 rounded mb-4 text-sm">
+          {error}
+        </p>
+      )}
 
-        <div className="input-group">
-          <label>Email</label>
-          <input
-            name="email"
-            type="email"
-            placeholder="you@example.com"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+        />
 
-        <div className="input-group">
-          <label>Password</label>
-          <div className="password-wrapper">
-            <input
-              name="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-            <button
-              type="button"
-              className="toggle-password"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-        </div>
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+        />
 
-        <button type="submit" className="auth-btn" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          Login
         </button>
       </form>
-
-      <ErrorModal message={error} onClose={() => setError("")} />
-
-      <div className="auth-link">
-        <span>Don't have an account? </span>
-        <a href="/register">Register</a>
-      </div>
     </div>
   );
 }

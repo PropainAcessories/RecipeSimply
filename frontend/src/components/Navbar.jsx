@@ -1,85 +1,74 @@
-import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "./Navbar.css";
+import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
-  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
-
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const access = localStorage.getItem("access");
-    if (!access) return;
-
-    const fetchUser = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/users/me/`, {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          console.log(data)
-          setUser(data);
-        } else {
-          localStorage.removeItem("access");
-          localStorage.removeItem("refresh");
-        }
-      } catch (err) {
-        console.log("Error fetching user:", err);
-      }
-    };
-
-    fetchUser();
-  }, [API_URL]);
+  const { user, isAuthenticated, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
-    setUser(null);
+    logout();
     navigate("/login");
   };
 
-  const isLoggedIn = user && user.is_active;
-
   const avatarSrc =
     user?.avatar_url ||
-    "https://ui-avatars.com/api/?name=" +
-      encodeURIComponent(user?.username || "User");
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      user?.username || "User"
+    )}`;
 
   return (
-    <nav className="navbar">
-      <div className="nav-left">
-        <Link to="/" className="nav-logo">
+    <nav className="w-full bg-white shadow-md px-6 py-4 flex items-center justify-between">
+      {/* Left side */}
+      <div className="flex items-center gap-3">
+        <Link to="/" className="text-xl font-bold text-blue-600">
           RecipeSimply
         </Link>
 
-        <div className={`status-dot ${isLoggedIn ? "online" : "offline"}`}></div>
-        <span className="status-text">
-          {isLoggedIn ? "Online" : "Offline"}
+        {/* Status dot */}
+        <div
+          className={`h-3 w-3 rounded-full ${
+            isAuthenticated ? "bg-green-500" : "bg-gray-400"
+          }`}
+        ></div>
+
+        <span className="text-sm text-gray-600">
+          {isAuthenticated ? "Online" : "Offline"}
         </span>
       </div>
 
-      <div className="nav-right">
-        {isLoggedIn ? (
+      {/* Right side */}
+      <div className="flex items-center gap-4">
+        {isAuthenticated ? (
           <>
-            <Link to="/profile" className="nav-username">
-              <img src={avatarSrc} alt="avatar" className="nav-avatar" />
-              <span>{user.username}</span>
+            <Link to="/profile" className="flex items-center gap-2">
+              <img
+                src={avatarSrc}
+                alt="avatar"
+                className="h-8 w-8 rounded-full border"
+              />
+              <span className="font-medium">{user?.username}</span>
             </Link>
-            <button onClick={handleLogout} className="nav-btn logout">
+
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+            >
               Logout
             </button>
           </>
         ) : (
           <>
-            <Link to="/login" className="nav-btn">
+            <Link
+              to="/login"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
               Login
             </Link>
-            <Link to="/register" className="nav-btn">
+
+            <Link
+              to="/register"
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+            >
               Register
             </Link>
           </>

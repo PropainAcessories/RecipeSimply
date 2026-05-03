@@ -1,0 +1,27 @@
+.profile-container {
+  width: 92%;
+  max-width: 600px;
+  margin: 10% auto;
+  padding: 8%;
+  background: var(--card);
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.profile-info {
+  margin-top: 6%;
+  font-size: 1.1rem;
+}
+
+.profile-info p {
+  margin-bottom: 3%;
+}
+
+/* DESKTOP */
+@media (min-width: 900px) {
+  .profile-container {
+    max-width: 700px;
+    padding: 5%;
+  }
+}

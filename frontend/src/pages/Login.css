@@ -1,117 +1,27 @@
-/* Shared container styling */
-.auth-container {
-  max-width: 380px;
-  margin: 60px auto;
-  padding: 30px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  font-family: system-ui, sans-serif;
-  animation: fadeIn 0.4s ease;
+.login-container,
+.register-container {
+  width: 92%;
+  max-width: 420px;
+  margin: 10% auto;
+  padding: 8%;
+  background: var(--card);
+  border-radius: 1rem;
+  border: 1px solid var(--border);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.auth-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-/* Form layout */
-.auth-form {
+.login-form,
+.register-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 6%;
 }
 
-/* Input groups */
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.input-group label {
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.input-group input {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 1rem;
-  transition: 0.2s;
-}
-
-.input-group input:focus {
-  border-color: #3498db;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
-}
-
-/* Password wrapper (for show/hide toggle) */
-.password-wrapper {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.password-wrapper input {
-  width: 100%;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  background: none;
-  border: none;
-  color: #3498db;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-
-.toggle-password:hover {
-  text-decoration: underline;
-}
-
-/* Submit button */
-.auth-btn {
-  padding: 12px;
-  border-radius: 8px;
-  background: #3498db;
-  color: white;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.auth-btn:hover {
-  background: #2980b9;
-}
-
-.auth-btn:disabled {
-  background: #7fbce3;
-  cursor: not-allowed;
-}
-
-/* Optional: link styling for "Don't have an account?" */
-.auth-link {
-  margin-top: 12px;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.auth-link a {
-  color: #3498db;
-  text-decoration: none;
-}
-
-.auth-link a:hover {
-  text-decoration: underline;
+/* DESKTOP */
+@media (min-width: 900px) {
+  .login-container,
+  .register-container {
+    max-width: 480px;
+    padding: 5%;
+    margin-top: 5%;
+  }
 }
