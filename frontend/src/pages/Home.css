@@ -1,0 +1,25 @@
+.home-container {
+  width: 92%;
+  margin: 6% auto;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(46%, 1fr));
+  gap: 4%;
+}
+
+/* MOBILE SINGLE COLUMN */
+@media (max-width: 480px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+    gap: 6%;
+  }
+}
+
+/* DESKTOP 3-COLUMN */
+@media (min-width: 1100px) {
+  .home-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

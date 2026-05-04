@@ -1,44 +1,35 @@
 from django.db import models
-from django.contrib.auth.models import User
-
+from django.conf import settings
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 class Recipe(models.Model):
-    title = models.CharField(max_length=255)
+    author = models.ForeignKey(User, 
+                               on_delete=models.CASCADE, 
+                               related_name="recipes",
+                               null=True,
+                               blank=True
+                               )
+    title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
+    ingredients = models.TextField()
+    steps = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+
+class Comment(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="comments")
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.title
-
-
-class Ingredient(models.Model):
-    recipe = models.ForeignKey(Recipe, related_name="ingredients", on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    amount = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"{self.amount} {self.name}"
-
-
-class Step(models.Model):
-    recipe = models.ForeignKey(Recipe, related_name="steps", on_delete=models.CASCADE)
-    order = models.PositiveIntegerField()
-    instruction = models.TextField()
-
-    class Meta:
-        ordering = ["order"]
-
-    def __str__(self):
-        return f"Step {self.order}"
-
-
-class UserRecipeFavorite(models.Model):
+class Like(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="likes")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ("user", "recipe")
-
-    def __str__(self):
-        return f"{self.user.username} → {self.recipe.title}"
+class Meta:
+    unique_together = ("recipe", "user")
+    indexes = [
+        models.Index(fields=["recipe", "user"]),
+    ]

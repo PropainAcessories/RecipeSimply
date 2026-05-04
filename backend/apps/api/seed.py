@@ -1,40 +1,104 @@
-from apps.api.models import Recipe, Ingredient, Step
+import random
+from django.contrib.auth import get_user_model
+from apps.api.models import Recipe, Comment, Like
 
-# Clear existing data (optional)
-Recipe.objects.all().delete()
+User = get_user_model()
 
-# --- Recipe 1 ---
-pancakes = Recipe.objects.create(
-    title="Fluffy Pancakes",
-    description="Light, fluffy pancakes perfect for breakfast."
-)
+def run():
+    print("Seeding database...")
 
-Ingredient.objects.create(recipe=pancakes, name="Flour", amount="1 cup")
-Ingredient.objects.create(recipe=pancakes, name="Milk", amount="1 cup")
-Ingredient.objects.create(recipe=pancakes, name="Eggs", amount="2")
-Ingredient.objects.create(recipe=pancakes, name="Sugar", amount="2 tbsp")
-Ingredient.objects.create(recipe=pancakes, name="Baking Powder", amount="2 tsp")
+    # --- USERS ---
+    users_data = [
+        {"username": "henry", "email": "henry@example.com"},
+        {"username": "chef_amy", "email": "amy@example.com"},
+        {"username": "foodie_john", "email": "john@example.com"},
+    ]
 
-Step.objects.create(recipe=pancakes, order=1, instruction="Mix dry ingredients together.")
-Step.objects.create(recipe=pancakes, order=2, instruction="Whisk in milk and eggs.")
-Step.objects.create(recipe=pancakes, order=3, instruction="Pour batter onto hot skillet.")
-Step.objects.create(recipe=pancakes, order=4, instruction="Cook until golden brown on both sides.")
+    users = []
+    for data in users_data:
+        user, created = User.objects.get_or_create(
+            username=data["username"],
+            defaults={
+                "email": data["email"],
+                "password": "pbkdf2_sha256$260000$dummy$dummyhash"  # placeholder
+            },
+        )
+        users.append(user)
 
-# --- Recipe 2 ---
-spaghetti = Recipe.objects.create(
-    title="Classic Spaghetti",
-    description="Simple and delicious spaghetti with tomato sauce."
-)
+    # --- RECIPES ---
+    recipes_data = [
+        {
+            "title": "Classic Spaghetti Carbonara",
+            "description": "A creamy Roman pasta dish with eggs, cheese, pancetta, and pepper.",
+            "ingredients": "Spaghetti\nEggs\nParmesan\nPancetta\nBlack Pepper",
+            "steps": "Boil pasta\nCook pancetta\nMix eggs + cheese\nCombine everything",
+        },
+        {
+            "title": "Garlic Butter Steak Bites",
+            "description": "Juicy steak cubes seared in garlic butter.",
+            "ingredients": "Steak\nButter\nGarlic\nSalt\nPepper",
+            "steps": "Cut steak\nSear in butter\nAdd garlic\nServe hot",
+        },
+        {
+            "title": "Chicken Alfredo",
+            "description": "Creamy Alfredo sauce tossed with fettuccine and grilled chicken.",
+            "ingredients": "Chicken\nFettuccine\nCream\nParmesan\nGarlic",
+            "steps": "Cook pasta\nMake sauce\nGrill chicken\nCombine",
+        },
+        {
+            "title": "Avocado Toast",
+            "description": "Simple and delicious breakfast toast with smashed avocado.",
+            "ingredients": "Bread\nAvocado\nSalt\nPepper\nLemon",
+            "steps": "Toast bread\nMash avocado\nSpread and season",
+        },
+        {
+            "title": "Blueberry Pancakes",
+            "description": "Fluffy pancakes loaded with fresh blueberries.",
+            "ingredients": "Flour\nEggs\nMilk\nBlueberries\nSugar",
+            "steps": "Mix batter\nAdd berries\nCook on skillet",
+        },
+        {
+            "title": "Homemade Pizza",
+            "description": "Crispy homemade pizza with your favorite toppings.",
+            "ingredients": "Dough\nTomato Sauce\nCheese\nPepperoni\nBasil",
+            "steps": "Roll dough\nAdd toppings\nBake",
+        },
+    ]
 
-Ingredient.objects.create(recipe=spaghetti, name="Spaghetti", amount="1 lb")
-Ingredient.objects.create(recipe=spaghetti, name="Tomato Sauce", amount="2 cups")
-Ingredient.objects.create(recipe=spaghetti, name="Garlic", amount="3 cloves")
-Ingredient.objects.create(recipe=spaghetti, name="Olive Oil", amount="2 tbsp")
-Ingredient.objects.create(recipe=spaghetti, name="Salt", amount="to taste")
+    recipes = []
+    for data in recipes_data:
+        recipe, created = Recipe.objects.get_or_create(
+            title=data["title"],
+            defaults={
+                "author": random.choice(users),
+                "description": data["description"],
+                "ingredients": data["ingredients"],
+                "steps": data["steps"],
+            },
+        )
+        recipes.append(recipe)
 
-Step.objects.create(recipe=spaghetti, order=1, instruction="Boil spaghetti until al dente.")
-Step.objects.create(recipe=spaghetti, order=2, instruction="Sauté garlic in olive oil.")
-Step.objects.create(recipe=spaghetti, order=3, instruction="Add tomato sauce and simmer.")
-Step.objects.create(recipe=spaghetti, order=4, instruction="Combine spaghetti with sauce and serve.")
+    # --- COMMENTS ---
+    sample_comments = [
+        "This looks amazing!",
+        "I tried this and loved it.",
+        "Great recipe!",
+        "My family enjoyed this a lot.",
+        "Super easy to make!",
+    ]
 
-print("Database seeded successfully!")
+    for recipe in recipes:
+        for _ in range(random.randint(1, 3)):
+            Comment.objects.get_or_create(
+                recipe=recipe,
+                author=random.choice(users),
+                text=random.choice(sample_comments),
+            )
+
+    # --- LIKES ---
+    for recipe in recipes:
+        for user in users:
+            if random.random() < 0.5:  # 50% chance user likes recipe
+                Like.objects.get_or_create(recipe=recipe, user=user)
+
+    print("Seeding complete!")

@@ -1,0 +1,23 @@
+.edit-profile-container {
+  width: 92%;
+  max-width: 600px;
+  margin: 10% auto;
+  padding: 8%;
+  background: var(--card);
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+}
+
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6%;
+}
+
+/* DESKTOP */
+@media (min-width: 900px) {
+  .edit-profile-container {
+    max-width: 700px;
+    padding: 5%;
+  }
+}

@@ -1,0 +1,27 @@
+.login-container,
+.register-container {
+  width: 92%;
+  max-width: 420px;
+  margin: 10% auto;
+  padding: 8%;
+  background: var(--card);
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+}
+
+.login-form,
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6%;
+}
+
+/* DESKTOP */
+@media (min-width: 900px) {
+  .login-container,
+  .register-container {
+    max-width: 480px;
+    padding: 5%;
+    margin-top: 5%;
+  }
+}

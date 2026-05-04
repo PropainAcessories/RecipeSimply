@@ -1,0 +1,40 @@
+.navbar {
+  width: 100%;
+  padding: 4% 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 4%;
+}
+
+.nav-avatar {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* DESKTOP NAVBAR */
+@media (min-width: 900px) {
+  .navbar {
+    padding: 1.5% 8%;
+  }
+
+  .nav-left,
+  .nav-right {
+    gap: 2%;
+  }
+
+  .nav-avatar {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+}
