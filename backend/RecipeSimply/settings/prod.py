@@ -37,7 +37,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Production database (Neon)
 DATABASES["default"] = dj_database_url.config(
     conn_max_age=600,
-    ssl_require=True,
+    ssl_require=False
 )
 
 AUTH_USER_MODEL = "users.User"
